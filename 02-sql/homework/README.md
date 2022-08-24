@@ -162,11 +162,17 @@ Buscá todas las películas filmadas en el año que naciste.
 
 2. __1982__
 
+SELECT * from movies WHERE year = 2000 
+
 Cuantas películas hay en la DB que sean del año 1982?
 
 3. __Stacktors__
 
+SELECT COUNT(*) from movies WHERE year = 1982
+
 Buscá actores que tengan el substring `stack` en su apellido.
+
+SELECT * FROM actors WHERE last_name LIKE '%stack%'
 
 4. __Fame Name Game__
 
@@ -174,21 +180,57 @@ Buscá los 10 nombres y apellidos más populares entre los actores. Cuantos acto
 
 > Esta consulta puede involucrar múltiples queries.
 
+SELECT last_name, COUNT(last_name) from actors
+GROUP BY last_name
+ORDER BY COUNT(last_name) DESC
+LIMIT 10
+
+SELECT first_name, COUNT(first_name) from actors
+GROUP BY first_name
+ORDER BY COUNT(first_name) DESC
+LIMIT 10
+
 5. __Prolific__
 
-Listá el top 100 de actores más activos junto con el número de roles que haya realizado.
+Listá el top 100 de actores más activos junto con el número de roles que haya realizado..
+
+SELECT id, first_name, last_name, COUNT(first_name) as activity FROM actors
+JOIN roles
+	ON actors.id = roles.actor_id
+	GROUP BY first_name , last_name
+	ORDER BY activity DESC
+  LIMIT 100
 
 6. __Bottom of the Barrel__
 
 Cuantas películas tiene IMDB por género? Ordená la lista por el género menos popular.
 
+SELECT genre , COUNT( genre ) as popular from movies_genres
+GROUP BY genre 
+ORDER BY popular DESC
+
 7. __Braveheart__
 
 Listá el nombre y apellido de todos los actores que trabajaron en la película "Braveheart" de 1995, ordená la lista alfabéticamente por apellido.
 
+SELECT a.first_name, a.last_name
+FROM actors as a
+JOIN roles as r on a.id = r.actor_id
+JOIN movies as m ON r.movie_id = m.id
+WHERE m.name = "Braveheart" AND m.year = 1995
+ORDER BY a.last_name
+
 8. __Leap Noir__
 
 Listá todos los directores que dirigieron una película de género 'Film-Noir' en un año bisiesto (para reducir la complejidad, asumí que cualquier año divisible por cuatro es bisiesto). Tu consulta debería devolver el nombre del director, el nombre de la peli y el año. Todo ordenado por el nombre de la película.
+
+select d.first_name, d.last_name, m.name, m.year
+FROM directors as d
+JOIN movies_genres as md ON d.id = md.movie_id
+JOIN movies as m ON md.movie_id = m.id
+JOIN movies_genres as mg ON m.id = mg.movie_id
+WHERE mg.genre = "Film-Noir" AND m.year % 4 = 0
+ORDER BY m.name
 
 9. __° Bacon__
 
