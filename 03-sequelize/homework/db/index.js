@@ -11,6 +11,14 @@ modelCharacter(db);
 modelAbility(db);
 modelRole(db);
 
+const { Character, Ability, Role} = db.models;
+
+Character.hasMany(Ability);
+Ability.belongsTo(Character);
+
+Character.belongsToMany(Role, { through: 'Character_Role' })
+Role.belongsToMany(Character, { through: 'Character_Role' })
+
 module.exports = {
   ...db.models,
   db,

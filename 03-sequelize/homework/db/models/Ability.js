@@ -13,6 +13,16 @@ module.exports = sequelize => {
     mana_cost: {
       type: DataTypes.FLOAT,
       allowNull: false,
-      unique: 'uniqueNameMana'
+      unique: 'uniqueNameMana',
+      validate: {
+        min: 10.0,
+        max: 250.0
+      }
+    },
+    summary: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return `${this.name} (${this.mana_cost} points of mana) - Description: ${this.description}`
+      }
     }
 })}

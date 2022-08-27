@@ -27,19 +27,8 @@ router.get("/", async (req, res) => {
 
   if (race) where.race = race;
   if (age) where.age = age;
-
-  if (value)
-    await Character.update(
-      {
-        age: value,
-      },
-      {
-        where: { [Op.is]: null },
-      },
-        res.text("Personajes actualizados")
-    );
-
   if (where) condition.where = where;
+
   if (!condition) {
     const characters = await Character.findAll();
     return res.json(characters);
@@ -76,5 +65,37 @@ router.get("/:code", async (req, res) => {
       .send(`El código ${code} no corresponde a un personaje existente`);
   }
 });
+
+router.put('/addAbilities', async (req,res) => {
+  const { codeCharacter, abilities} = req.body;
+
+  const character = await Character.findByPk(codeCharacter);
+  const promises = abilities.map( a => character.createAbility(a));
+  await Promise.all(promises);
+  res.send('OK')
+
+});
+
+router.put("/:attribute", async (req, res) => {
+  const { attribute } = req.params;
+  const { value } = req.query;
+
+  try {
+    await Character.update(
+      { [attribute]: value },
+      {
+        where: {
+          [attribute]: { [Op.is]: null },
+        },
+      }
+    );
+
+    res.send("Personajes actualizados");
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+
 
 module.exports = router;

@@ -39,7 +39,7 @@ describe('Ability Routes', () => {
         await Promise.all([p1Character, p2Character, p3Character, p1Ability, p2Ability, p3Ability]);
       })
   
-      xit('should associate ability with character', async () => {
+      it('should associate ability with character', async () => {
         const res = await request(app)
                             .put('/ability/setCharacter')
                             .send({idAbility: 1, codeCharacter: 'ONE'});

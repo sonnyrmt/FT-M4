@@ -13,4 +13,13 @@ router.post('/', async (req,res) => {
     res.status(201).json(ability);
 });
 
+router.put('/setCharacter', async (req, res) => {
+    const {idAbility, codeCharacter} = req.body;
+
+    const ability = await Ability.findByPk(idAbility);
+    await ability.setCharacter(codeCharacter);
+    res.json(ability)
+
+});
+
 module.exports = router;
